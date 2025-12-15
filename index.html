@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Card Generator | Islington WebDev Community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== GLOBAL STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(45deg, #cb5851 10%, #663399 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* ===== FORM CARD ===== */
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .form-section input[type="text"],
+        .form-section select,
+        .form-section textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-section input:focus,
+        .form-section select:focus,
+        .form-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-section textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        /* Checkbox group styling */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Radio group styling */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-group.radio-inline {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .radio-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Required indicator */
+        .required {
+            color: #e53e3e;
+            margin-left: 0.25rem;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        /* ===== DEVELOPER CARD ===== */
+        #cardOutput {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        #cardOutput.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dev-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(102, 51, 153, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            max-width: 920px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 480px;
+        }
+
+        /* Left Panel - Brand Identity */
+        .card-left-panel {
+            background: linear-gradient(165deg, #663399 0%, #552288 100%);
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            color: white;
+        }
+
+        .card-left-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(203, 88, 81, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-left-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(203, 88, 81, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #cb5851 0%, #a94640 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-course {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-comfort-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-comfort-badge i {
+            color: #cb5851;
+        }
+
+        /* Brand Footer */
+        .card-brand-footer {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-community-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        /* Right Panel - Content */
+        .card-right-panel {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: #fafafa;
+        }
+
+        /* Section Styling */
+        .card-info-section {
+            position: relative;
+        }
+
+        .card-section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #663399;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .card-section-label i {
+            font-size: 0.8rem;
+            color: #cb5851;
+        }
+
+        /* Interest Chips */
+        .interest-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .interest-chip {
+            background: white;
+            border: 1.5px solid #e0d4f0;
+            color: #663399;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+        }
+
+        .interest-chip:hover {
+            background: #663399;
+            color: white;
+            border-color: #663399;
+            transform: translateY(-2px);
+        }
+
+        .interest-chip i {
+            font-size: 0.75rem;
+        }
+
+        /* Excited Box - Highlighted */
+        .excited-box {
+            background: linear-gradient(135deg, rgba(102, 51, 153, 0.08) 0%, rgba(203, 88, 81, 0.08) 100%);
+            border-left: 3px solid #cb5851;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #2d3748;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* Inline Info Grid */
+        .inline-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .inline-info-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid #e8e3f0;
+        }
+
+        .inline-info-item .card-section-label {
+            margin-bottom: 0.4rem;
+        }
+
+        .inline-info-content {
+            font-size: 0.9rem;
+            color: #4a5568;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .inline-info-content i {
+            color: #cb5851;
+        }
+
+        /* Struggle - Muted */
+        .struggle-text {
+            font-size: 0.85rem;
+            color: #718096;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        /* Fun Fact - Special */
+        .funfact-box {
+            background: white;
+            border: 1.5px dashed #e0d4f0;
+            padding: 0.9rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: #4a5568;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        /* Download button */
+        .download-section {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .btn-download {
+            background: #48bb78;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        /* Helper text */
+        .helper-text {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-card,
+            .dev-card {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            /* Stack card vertically on mobile */
+            .dev-card {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .card-left-panel {
+                padding: 2rem 1.5rem;
+                text-align: center;
+                align-items: center;
+            }
+
+            .card-avatar {
+                margin: 0 auto 1rem;
+            }
+
+            .card-brand-footer {
+                text-align: center;
+            }
+
+            .card-right-panel {
+                padding: 2rem 1.5rem;
+            }
+
+            .inline-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Empty state message */
+        .empty-message {
+            text-align: center;
+            padding: 2rem;
+            color: #718096;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Create Your DevCard 🪪</h1>
+            <p>Share who you are and what you're exploring - no pressure, just you!</p>
+        </div>
+
+        <!-- Form -->
+        <div class="form-card">
+            <form id="devCardForm">
+                <!-- Name -->
+                <div class="form-section">
+                    <label for="name">Your Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="How should we call you?" required>
+                </div>
+
+                <!-- Year -->
+                <div class="form-section">
+                    <label>Year <span class="required">*</span></label>
+                    <div class="radio-group radio-inline">
+                        <div class="radio-item">
+                            <input type="radio" id="year1" name="year" value="1st Year" required>
+                            <label for="year1">1st Year</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="year2" name="year" value="2nd Year">
+                            <label for="year2">2nd Year</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="year3" name="year" value="3rd Year">
+                            <label for="year3">3rd Year</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course -->
+                <div class="form-section">
+                    <label for="course">Course <span class="required">*</span></label>
+                    <select id="course" name="course" required>
+                        <option value="">Choose your course...</option>
+                        <option value="BSc (Hons) Computing">BSc (Hons) Computing</option>
+                        <option value="BSc (Hons) Computer Networking & IT Security">BSc (Hons) Computer Networking & IT Security</option>
+                        <option value="BSc (Hons) Multimedia Technologies">BSc (Hons) Multimedia Technologies</option>
+                        <option value="BSc (Hons) Computing with Artificial Intelligence">BSc (Hons) Computing with Artificial Intelligence</option>
+                        <option value="BA (Hons) Business Administration">BA (Hons) Business Administration</option>
+                        <option value="BA (Hons) Accounting and Finances">BA (Hons) Accounting and Finances</option>
+                    </select>
+                </div>
+
+                <!-- Areas of Interest -->
+                <div class="form-section">
+                    <label>Areas of Interest <span class="required">*</span></label>
+                    <p class="helper-text">Pick all that spark your curiosity (at least one)</p>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="frontend" name="interests" value="Frontend Development">
+                            <label for="frontend">Frontend Development</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="backend" name="interests" value="Backend Development">
+                            <label for="backend">Backend Development</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fullstack" name="interests" value="Full Stack">
+                            <label for="fullstack">Full Stack</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="uiux" name="interests" value="UI/UX Design">
+                            <label for="uiux">UI/UX Design</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="mobile" name="interests" value="Mobile App Development">
+                            <label for="mobile">Mobile App Development</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ai" name="interests" value="AI & Machine Learning">
+                            <label for="ai">AIML</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="datascience" name="interests" value="Data Science">
+                            <label for="datascience">Data Science</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cybersecurity" name="interests" value="Cybersecurity">
+                            <label for="cybersecurity">Cybersecurity</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="devops" name="interests" value="DevOps">
+                            <label for="devops">DevOps</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="exploring" name="interests" value="Still Exploring">
+                            <label for="exploring">Still Exploring</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <input type="text" id="otherInterest" name="otherInterest" placeholder="Other area of interest? Type it here...">
+                    </div>
+                </div>
+
+                <!-- Tech Comfort Level -->
+                <div class="form-section">
+                    <label>Tech Comfort Level <span class="required">*</span></label>
+                    <p class="helper-text">We all start somewhere—where are you right now?</p>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="starting" name="comfort" value="Just Starting" required>
+                            <label for="starting">Just Starting</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="exposure" name="comfort" value="Some Exposure">
+                            <label for="exposure">Some Exposure</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="comfortable" name="comfort" value="Comfortable">
+                            <label for="comfortable">Comfortable</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Struggle -->
+                <div class="form-section">
+                    <label for="struggle">Current Struggle</label>
+                    <p class="helper-text">What's challenging you lately? (totally optional)</p>
+                    <input type="text" id="struggle" name="struggle" placeholder="CSS layouts, time management, databases, imposter syndrome...">
+                </div>
+
+                <!-- Excited to Learn -->
+                <div class="form-section">
+                    <label for="excited">Excited to Learn <span class="required">*</span></label>
+                    <p class="helper-text">What makes you curious right now?</p>
+                    <input type="text" id="excited" name="excited" placeholder="React, AI, game dev, animations..." required>
+                </div>
+
+                <!-- Preferred Role -->
+                <div class="form-section">
+                    <label for="role">Preferred Role in a Project <span class="required">*</span></label>
+                    <p class="helper-text">How do you like to contribute ?</p>
+                    <select id="role" name="role" required>
+                        <option value="">Choose one...</option>
+                        <option value="Builder">Developer</option>
+                        <option value="Designer">Designer</option>
+                        <option value="Problem Solver">Project Lead</option>
+                        <option value="Organizer">Organizer</option>
+                        <option value="MoralSupport">Moral Support</option>
+                        <option value="Not Sure Yet">Not Sure Yet</option>
+                    </select>
+                </div>
+
+                <!-- Fun Fact -->
+                <div class="form-section">
+                    <label for="funfact">Fun Fact / College Life</label>
+                    <p class="helper-text">Share something that makes you smile (optional)</p>
+                    <textarea id="funfact" name="funfact" placeholder="Survived 3 deadlines in one week, coffee addict, midnight coder..."></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-magic"></i> Generate My Card
+                    </button>
+                    <button type="button" id="resetBtn" class="btn-secondary">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Card Output -->
+        <div id="cardOutput">
+            <div class="dev-card" id="devCard">
+                <!-- Left Panel: Identity & Brand -->
+                <div class="card-left-panel">
+                    <div class="card-avatar" id="cardAvatar"></div>
+                    <div class="card-name" id="cardName"></div>
+                    <div class="card-course" id="cardCourse"></div>
+                    
+                    <div class="card-comfort-badge" id="cardComfortBadge">
+                        <i class="fas fa-code"></i>
+                        <span id="cardComfort"></span>
+                    </div>
+
+                    <div class="card-brand-footer">
+                        <div class="card-community-label">Islington WebDev Community</div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Content & Info -->
+                <div class="card-right-panel">
+                    <!-- Interests -->
+                    <div class="card-info-section">
+                        <div class="card-section-label">
+                            <i class="fas fa-heart"></i>
+                            Areas of Interest
+                        </div>
+                        <div class="interest-chips" id="cardInterests"></div>
+                    </div>
+
+                    <!-- Excited to Learn - Highlighted -->
+                    <div class="card-info-section">
+                        <div class="card-section-label">
+                            <i class="fas fa-sparkles"></i>
+                            Excited to Learn
+                        </div>
+                        <div class="excited-box" id="cardExcited"></div>
+                    </div>
+
+                    <!-- Role & Struggle Grid -->
+                    <div class="inline-info-grid">
+                        <div class="inline-info-item">
+                            <div class="card-section-label">
+                                <i class="fas fa-users"></i>
+                                Preferred Role
+                            </div>
+                            <div class="inline-info-content">
+                                <i class="fas fa-arrow-right"></i>
+                                <span id="cardRole"></span>
+                            </div>
+                        </div>
+
+                        <div class="inline-info-item" id="struggleSection" style="display: none;">
+                            <div class="card-section-label">
+                                <i class="fas fa-mountain"></i>
+                                Current Challenge
+                            </div>
+                            <div class="struggle-text" id="cardStruggle"></div>
+                        </div>
+                    </div>
+
+                    <!-- Fun Fact -->
+                    <div class="card-info-section" id="funfactSection" style="display: none;">
+                        <div class="card-section-label">
+                            <i class="fas fa-smile"></i>
+                            Fun Fact
+                        </div>
+                        <div class="funfact-box" id="cardFunfact"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section">
+                <button class="btn-download" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download as Image
+                </button>
+                <p class="helper-text" style="margin-top: 0.75rem;">
+                    💡 Tip: You can also take a screenshot to save your card!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // ===== FORM HANDLING =====
+        const form = document.getElementById('devCardForm');
+        const cardOutput = document.getElementById('cardOutput');
+        const resetBtn = document.getElementById('resetBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Form submission handler
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validate at least one interest is selected or other interest is filled
+            const interests = document.querySelectorAll('input[name="interests"]:checked');
+            const otherInterest = document.getElementById('otherInterest').value.trim();
+            
+            if (interests.length === 0 && !otherInterest) {
+                alert('Please select at least one area of interest or type your own!');
+                return;
+            }
+
+            // Get form values
+            const formData = {
+                name: document.getElementById('name').value,
+                year: document.querySelector('input[name="year"]:checked').value,
+                course: document.getElementById('course').value,
+                interests: Array.from(interests).map(cb => cb.value),
+                otherInterest: otherInterest,
+                comfort: document.querySelector('input[name="comfort"]:checked').value,
+                struggle: document.getElementById('struggle').value,
+                excited: document.getElementById('excited').value,
+                role: document.getElementById('role').value,
+                funfact: document.getElementById('funfact').value
+            };
+
+            // Generate card
+            generateCard(formData);
+
+            // Show card with smooth scroll
+            cardOutput.classList.add('visible');
+            setTimeout(() => {
+                cardOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        });
+
+        // ===== CARD GENERATION =====
+        function generateCard(data) {
+            // Name - extract initials for avatar
+            const nameParts = data.name.trim().split(' ');
+            const initials = nameParts.length > 1 
+                ? nameParts[0][0] + nameParts[nameParts.length - 1][0]
+                : nameParts[0][0];
+            document.getElementById('cardAvatar').textContent = initials.toUpperCase();
+            
+            // Name and Course
+            document.getElementById('cardName').textContent = data.name;
+            document.getElementById('cardCourse').textContent = `${data.year} • ${data.course}`;
+
+            // Tech Comfort
+            document.getElementById('cardComfort').textContent = data.comfort;
+
+            // Interests (with icons) - render as compact chips
+            const interestIcons = {
+                'Frontend Development': 'fa-palette',
+                'Backend Development': 'fa-server',
+                'Full Stack': 'fa-layer-group',
+                'UI/UX Design': 'fa-pen-nib',
+                'Mobile App Development': 'fa-mobile-alt',
+                'Game Development': 'fa-gamepad',
+                'AI & Machine Learning': 'fa-brain',
+                'Data Science': 'fa-chart-line',
+                'Cybersecurity': 'fa-shield-alt',
+                'Cloud Computing': 'fa-cloud',
+                'DevOps': 'fa-cogs',
+                'Blockchain': 'fa-link',
+                'Open Source': 'fa-code-branch',
+                'Still Exploring': 'fa-compass'
+            };
+
+            // Combine checked interests with custom other interest
+            let allInterests = [...data.interests];
+            if (data.otherInterest) {
+                allInterests.push(data.otherInterest);
+            }
+
+            const interestsHTML = allInterests.map(interest => 
+                `<span class="interest-chip">
+                    <i class="fas ${interestIcons[interest] || 'fa-star'}"></i>
+                    ${interest}
+                </span>`
+            ).join('');
+            document.getElementById('cardInterests').innerHTML = interestsHTML;
+
+            // Current Struggle (show/hide section)
+            const struggleSection = document.getElementById('struggleSection');
+            if (data.struggle) {
+                document.getElementById('cardStruggle').textContent = data.struggle;
+                struggleSection.style.display = 'block';
+            } else {
+                struggleSection.style.display = 'none';
+            }
+
+            // Excited to Learn
+            document.getElementById('cardExcited').textContent = data.excited;
+
+            // Preferred Role
+            document.getElementById('cardRole').textContent = data.role;
+
+            // Fun Fact (show/hide section)
+            const funfactSection = document.getElementById('funfactSection');
+            if (data.funfact) {
+                document.getElementById('cardFunfact').textContent = data.funfact;
+                funfactSection.style.display = 'block';
+            } else {
+                funfactSection.style.display = 'none';
+            }
+        }
+
+        // ===== RESET FUNCTIONALITY =====
+        resetBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset the form?')) {
+                form.reset();
+                cardOutput.classList.remove('visible');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // ===== DOWNLOAD FUNCTIONALITY =====
+        downloadBtn.addEventListener('click', function() {
+            const card = document.getElementById('devCard');
+            
+            // Show loading state
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            downloadBtn.disabled = true;
+
+            // Use html2canvas to capture the card
+            html2canvas(card, {
+                backgroundColor: '#ffffff',
+                scale: 2, // Higher quality
+                logging: false
+            }).then(canvas => {
+                // Convert to blob and download
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const name = document.getElementById('name').value.replace(/\s+/g, '_');
+                    link.download = `${name}_developer_card.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+
+                    // Reset button
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download as Image';
+                    downloadBtn.disabled = false;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
